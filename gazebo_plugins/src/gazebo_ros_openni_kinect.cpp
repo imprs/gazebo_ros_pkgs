@@ -171,6 +171,7 @@ void GazeboRosOpenniKinect::DepthImageDisconnect()
 void GazeboRosOpenniKinect::DepthInfoConnect()
 {
   this->depth_info_connect_count_++;
+  this->parentSensor->SetActive(true);
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Decrement count
@@ -193,6 +194,7 @@ void GazeboRosOpenniKinect::OnNewDepthFrame(const float *_image,
   {
     if (this->point_cloud_connect_count_ <= 0 &&
         this->depth_image_connect_count_ <= 0 &&
+        this->depth_info_connect_count_ <= 0 &&
         (*this->image_connect_count_) <= 0)
     {
       this->parentSensor->SetActive(false);
@@ -232,6 +234,7 @@ void GazeboRosOpenniKinect::OnNewImageFrame(const unsigned char *_image,
   {
     if (this->point_cloud_connect_count_ <= 0 &&
         this->depth_image_connect_count_ <= 0 &&
+        this->depth_info_connect_count_ <= 0 &&
         (*this->image_connect_count_) <= 0)
     {
       this->parentSensor->SetActive(false);
@@ -430,6 +433,7 @@ bool GazeboRosOpenniKinect::FillDepthImageHelper(
 void GazeboRosOpenniKinect::PublishCameraInfo()
 {
   ROS_DEBUG_NAMED("openni_kinect", "publishing default camera info, then openni kinect camera info");
+
   GazeboRosCameraUtils::PublishCameraInfo();
 
   if (this->depth_info_connect_count_ > 0)
